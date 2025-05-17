@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import Layout from './components/layout/Layout'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import HomePage from './Pages/HomePage.jsx'
-import LoginPage from './Pages/auth/LoginPage.jsx'
-import SignUpPage from './Pages/auth/SignUpPage.jsx'
+import HomePage from './pages/HomePage.jsx'
+import LoginPage from './pages/auth/LoginPage.jsx'
+import SignUpPage from './pages/auth/SignUpPage.jsx'
 import toast, { Toaster } from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query'
 import { axiosInstance } from './lib/axios';
 import { useAuthUser } from './lib/hooks.js';
 import Chatbot from './components/Chatbot.jsx'
-import NotificationsPage from './Pages/NotificationsPage.jsx'
-import NetworkPage from './Pages/NetworkPage.jsx';
+import NotificationsPage from './pages/NotificationsPage.jsx'
+import NetworkPage from './pages/NetworkPage.jsx';
 import PostPage from './pages/PostPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 
