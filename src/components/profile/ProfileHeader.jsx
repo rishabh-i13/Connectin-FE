@@ -4,7 +4,7 @@ import { axiosInstance } from "../../lib/axios";
 import { toast } from "react-hot-toast";
 import { useAuthUser } from "../../lib/hooks";
 import DefaultPFP from "../../assets/defaultPFP.jpg";
-import DefaultBanner from "../../assets/defaultBanner.jpg";
+import DefaultBanner from "../../assets/defaultbanner.jpg";
 import { Camera, Clock, UserCheck, UserPlus, X ,MapPin} from "lucide-react";
 
 const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
