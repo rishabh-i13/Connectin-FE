@@ -180,7 +180,7 @@ const Navbar = () => {
               <div className="flex flex-col items-start px-4 py-2 space-y-2">
                 {authUser ? (
                   <>
-                    <Link
+                    {/* <Link
                       to="/"
                       className="text-neutral flex items-center space-x-2 w-full"
                       onClick={toggleMenu}
@@ -227,7 +227,7 @@ const Navbar = () => {
                     >
                       <FaUserAlt size={20} />
                       <span>Me</span>
-                    </Link>
+                    </Link> */}
                     <button
                       className="text-neutral flex items-center space-x-2 text-gray-600 hover:text-gray-800 w-full"
                       onClick={handleLogoutClick}
