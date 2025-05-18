@@ -58,6 +58,16 @@ const HomePage = () => {
             </p>
           </div>
         )}
+        {!isLoading && recommendedUsers?.length > 0 && (
+      <div className="block lg:hidden mt-6">
+        <h3 className="font-semibold mb-4 text-black">People you may know</h3>
+        <div className="space-y-4">
+          {recommendedUsers.map((user) => (
+            <RecommendedUser key={user._id} user={user} />
+          ))}
+        </div>
+      </div>
+    )}
       </div>
 
       {/* Right Suggestions - Fixed */}
