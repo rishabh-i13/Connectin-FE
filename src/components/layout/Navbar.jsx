@@ -15,7 +15,7 @@ const Navbar = () => {
   const { data: authUser, isLoading } = useAuthUser();
   const queryClient = useQueryClient();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const location = useLocation();
 
@@ -24,13 +24,13 @@ const Navbar = () => {
     refetch();
   }, [location]);
 
-  const { data: notifications,refetch } = useQuery({
+  const { data: notifications, refetch } = useQuery({
     queryKey: ["notifications"],
     queryFn: async () => await axiosInstance.get("/notifications"),
     enabled: !!authUser,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
-    staleTime: 10000, // 10 seconds: adjust based on your app
+    staleTime: 10000,
   });
 
   const { data: connectionRequests } = useQuery({
@@ -45,9 +45,8 @@ const Navbar = () => {
   });
 
   const unReadNotificationsCount = Array.isArray(notifications?.data)
-  ? notifications.data.filter((notif) => !notif.read).length
-  : 0;
-
+    ? notifications.data.filter((notif) => !notif.read).length
+    : 0;
 
   const unreadConnectionRequestsCount = connectionRequests?.data?.length;
 
@@ -56,13 +55,13 @@ const Navbar = () => {
   };
 
   const handleLogoutClick = () => {
-    setIsModalOpen(true); // Open modal instead of logging out directly
+    setIsModalOpen(true);
   };
 
   const confirmLogout = () => {
     logout();
     setIsModalOpen(false);
-    if (isMenuOpen) toggleMenu(); // Close mobile menu if open
+    if (isMenuOpen) toggleMenu();
   };
 
   const cancelLogout = () => {
@@ -70,194 +69,245 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-10">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-center py-3">
-          {/* Left side: Logo */}
-          <div className="flex items-center space-x-4">
-            <Link to="/">
-              <img className="h-10 rounded" src={Logo} alt="LinkedIn" />
+    <>
+      <nav className="bg-white shadow-md sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center py-3">
+            {/* Left side: Logo */}
+            <div className="flex items-center space-x-4">
+              <Link to="/">
+                <img className="h-10 rounded" src={Logo} alt="LinkedIn" />
+              </Link>
+            </div>
+
+            {/* Right side: Hamburger for mobile, links for desktop */}
+            <div className="flex items-center">
+              {/* Hamburger Icon (visible on mobile) */}
+              <button
+                className="md:hidden text-neutral focus:outline-none"
+                onClick={toggleMenu}
+                aria-label="Toggle menu"
+              >
+                {isMenuOpen ? (
+                  <IoClose size={24} />
+                ) : (
+                  <GiHamburgerMenu size={24} />
+                )}
+              </button>
+
+              {/* Desktop Menu */}
+              <div className="hidden md:flex items-center gap-6">
+                {authUser ? (
+                  <>
+                    <Link
+                      to="/"
+                      className="text-neutral flex flex-col items-center"
+                    >
+                      <IoHome size={20} />
+                      <span className="text-xs">Home</span>
+                    </Link>
+                    <Link
+                      to="/network"
+                      className="text-neutral flex flex-col items-center relative"
+                    >
+                      <BsFillPeopleFill size={22} />
+                      <span className="text-xs">My Network</span>
+                      {unreadConnectionRequestsCount > 0 && (
+                        <span
+                          className="absolute -top-1 right-4 bg-[#8E00F4] text-white text-xs 
+                          rounded-full size-4 flex items-center justify-center"
+                        >
+                          {unreadConnectionRequestsCount}
+                        </span>
+                      )}
+                    </Link>
+                    <Link
+                      to="/notifications"
+                      className="text-neutral flex flex-col items-center relative"
+                    >
+                      <IoNotifications size={22} />
+                      <span className="text-xs">Notifications</span>
+                      {unReadNotificationsCount > 0 && (
+                        <span
+                          className="absolute -top-1 right-4 bg-[#8E00F4] text-white text-xs 
+                          rounded-full size-4 flex items-center justify-center"
+                        >
+                          {unReadNotificationsCount}
+                        </span>
+                      )}
+                    </Link>
+                    <Link
+                      to={`/profile/${authUser.username}`}
+                      className="text-neutral flex flex-col items-center"
+                    >
+                      <FaUserAlt size={20} />
+                      <span className="text-xs">Me</span>
+                    </Link>
+                    <button
+                      className="flex items-center space-x-1 text-sm text-gray-600 hover:text-gray-800"
+                      onClick={handleLogoutClick}
+                    >
+                      <HiOutlineLogout size={20} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className="btn bg-[#8E00F4] text-white border-none"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="btn bg-[#360072] text-white border-none"
+                    >
+                      Join now
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Menu (visible when hamburger is clicked) */}
+          {isMenuOpen && (
+            <div
+              className="md:hidden bg-white absolute top-full right-0 w-1/2 z-20 [box-shadow:0_4px_6px_-1px_rgba(142,0,244,0.3),0_2px_4px_-2px_rgba(142,0,244,0.2)]"
+              style={{ minWidth: "150px" }}
+            >
+              <div className="flex flex-col items-start px-4 py-2 space-y-2">
+                {authUser ? (
+                  <>
+                    <Link
+                      to="/"
+                      className="text-neutral flex items-center space-x-2 w-full"
+                      onClick={toggleMenu}
+                    >
+                      <IoHome size={20} />
+                      <span>Home</span>
+                    </Link>
+                    <Link
+                      to="/network"
+                      className="text-neutral flex items-center space-x-2 relative w-full"
+                      onClick={toggleMenu}
+                    >
+                      <BsFillPeopleFill size={22} />
+                      <span>My Network</span>
+                      {unreadConnectionRequestsCount > 0 && (
+                        <span
+                          className="absolute left-6 top-0 bg-[#8E00F4] text-white text-xs 
+                          rounded-full size-4 flex items-center justify-center"
+                        >
+                          {unreadConnectionRequestsCount}
+                        </span>
+                      )}
+                    </Link>
+                    <Link
+                      to="/notifications"
+                      className="text-neutral flex items-center space-x-2 relative w-full"
+                      onClick={toggleMenu}
+                    >
+                      <IoNotifications size={22} />
+                      <span>Notifications</span>
+                      {unReadNotificationsCount > 0 && (
+                        <span
+                          className="absolute left-6 top-0 bg-[#8E00F4] text-white text-xs 
+                          rounded-full size-4 flex items-center justify-center"
+                        >
+                          {unReadNotificationsCount}
+                        </span>
+                      )}
+                    </Link>
+                    <Link
+                      to={`/profile/${authUser.username}`}
+                      className="text-neutral flex items-center space-x-2 w-full"
+                      onClick={toggleMenu}
+                    >
+                      <FaUserAlt size={20} />
+                      <span>Me</span>
+                    </Link>
+                    <button
+                      className="text-neutral flex items-center space-x-2 text-gray-600 hover:text-gray-800 w-full"
+                      onClick={handleLogoutClick}
+                    >
+                      <HiOutlineLogout size={20} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className="btn bg-[#8E00F4] text-white border-none w-full text-left"
+                      onClick={toggleMenu}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="btn bg-[#360072] text-white border-none w-full text-left"
+                      onClick={toggleMenu}
+                    >
+                      Join now
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Bottom Navigation Bar for Mobile Devices */}
+      {authUser && (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-md z-10">
+          <div className="flex justify-around items-center py-2">
+            <Link to="/" className="text-black flex flex-col items-center">
+              <IoHome size={24} />
+              <span className="text-xs">Home</span>
+            </Link>
+            <Link
+              to="/network"
+              className="text-black flex flex-col items-center relative"
+            >
+              <BsFillPeopleFill size={24} />
+              <span className="text-xs">My Network</span>
+              {unreadConnectionRequestsCount > 0 && (
+                <span
+                  className="absolute top-0 right-2 bg-[#8E00F4] text-white text-xs 
+                  rounded-full size-4 flex items-center justify-center"
+                >
+                  {unreadConnectionRequestsCount}
+                </span>
+              )}
+            </Link>
+            <Link
+              to="/notifications"
+              className="text-black flex flex-col items-center relative"
+            >
+              <IoNotifications size={24} />
+              <span className="text-xs">Notifications</span>
+              {unReadNotificationsCount > 0 && (
+                <span
+                  className="absolute top-0 right-2 bg-[#8E00F4] text-white text-xs 
+                  rounded-full size-4 flex items-center justify-center"
+                >
+                  {unReadNotificationsCount}
+                </span>
+              )}
+            </Link>
+            <Link
+              to={`/profile/${authUser.username}`}
+              className="text-black flex flex-col items-center"
+            >
+              <FaUserAlt size={24} />
+              <span className="text-xs">Me</span>
             </Link>
           </div>
-
-          {/* Right side: Hamburger for mobile, links for desktop */}
-          <div className="flex items-center">
-            {/* Hamburger Icon (visible on mobile) */}
-            <button
-              className="md:hidden text-neutral focus:outline-none"
-              onClick={toggleMenu}
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? (
-                <IoClose size={24} />
-              ) : (
-                <GiHamburgerMenu size={24} />
-              )}
-            </button>
-
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center gap-6">
-              {authUser ? (
-                <>
-                  <Link
-                    to="/"
-                    className="text-neutral flex flex-col items-center"
-                  >
-                    <IoHome size={20} />
-                    <span className="text-xs">Home</span>
-                  </Link>
-                  <Link
-                    to="/network"
-                    className="text-neutral flex flex-col items-center relative"
-                  >
-                    <BsFillPeopleFill size={22} />
-                    <span className="text-xs">My Network</span>
-                    {unreadConnectionRequestsCount > 0 && (
-                      <span
-                        className="absolute -top-1 right-4 bg-[#8E00F4] text-white text-xs 
-                        rounded-full size-4 flex items-center justify-center"
-                      >
-                        {unreadConnectionRequestsCount}
-                      </span>
-                    )}
-                  </Link>
-                  <Link
-                    to="/notifications"
-                    className="text-neutral flex flex-col items-center relative"
-                  >
-                    <IoNotifications size={22} />
-                    <span className="text-xs">Notifications</span>
-                    {unReadNotificationsCount > 0 && (
-                      <span
-                        className="absolute -top-1 right-4 bg-[#8E00F4] text-white text-xs 
-                        rounded-full size-4 flex items-center justify-center"
-                      >
-                        {unReadNotificationsCount}
-                      </span>
-                    )}
-                  </Link>
-                  <Link
-                    to={`/profile/${authUser.username}`}
-                    className="text-neutral flex flex-col items-center"
-                  >
-                    <FaUserAlt size={20} />
-                    <span className="text-xs">Me</span>
-                  </Link>
-                  <button
-                    className="flex items-center space-x-1 text-sm text-gray-600 hover:text-gray-800"
-                    onClick={handleLogoutClick} // Trigger modal
-                  >
-                    <HiOutlineLogout size={20} />
-                    <span>Logout</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="btn bg-[#8E00F4] text-white border-none"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="btn bg-[#360072] text-white border-none"
-                  >
-                    Join now
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
         </div>
-
-        {/* Mobile Menu (visible when hamburger is clicked) */}
-        {isMenuOpen && (
-          <div
-            className="md:hidden bg-white absolute top-full right-0 w-1/2 z-20 [box-shadow:0_4px_6px_-1px_rgba(142,0,244,0.3),0_2px_4px_-2px_rgba(142,0,244,0.2)]"
-            style={{ minWidth: "150px" }}
-          >
-            <div className="flex flex-col items-start px-4 py-2 space-y-2">
-              {authUser ? (
-                <>
-                  <Link
-                    to="/"
-                    className="text-neutral flex items-center space-x-2 w-full"
-                    onClick={toggleMenu}
-                  >
-                    <IoHome size={20} />
-                    <span>Home</span>
-                  </Link>
-                  <Link
-                    to="/network"
-                    className="text-neutral flex items-center space-x-2 relative w-full"
-                    onClick={toggleMenu}
-                  >
-                    <BsFillPeopleFill size={22} />
-                    <span>My Network</span>
-                    {unreadConnectionRequestsCount > 0 && (
-                      <span
-                        className="absolute left-6 top-0 bg-[#8E00F4] text-white text-xs 
-                        rounded-full size-4 flex items-center justify-center"
-                      >
-                        {unreadConnectionRequestsCount}
-                      </span>
-                    )}
-                  </Link>
-                  <Link
-                    to="/notifications"
-                    className="text-neutral flex items-center space-x-2 relative w-full"
-                    onClick={toggleMenu}
-                  >
-                    <IoNotifications size={22} />
-                    <span>Notifications</span>
-                    {unReadNotificationsCount > 0 && (
-                      <span
-                        className="absolute left-6 top-0 bg-[#8E00F4] text-white text-xs 
-                        rounded-full size-4 flex items-center justify-center"
-                      >
-                        {unReadNotificationsCount}
-                      </span>
-                    )}
-                  </Link>
-                  <Link
-                    to={`/profile/${authUser.username}`}
-                    className="text-neutral flex items-center space-x-2 w-full"
-                    onClick={toggleMenu}
-                  >
-                    <FaUserAlt size={20} />
-                    <span>Me</span>
-                  </Link>
-                  <button
-                    className="text-neutral flex items-center space-x-2 text-gray-600 hover:text-gray-800 w-full"
-                    onClick={handleLogoutClick} // Trigger modal
-                  >
-                    <HiOutlineLogout size={20} />
-                    <span>Logout</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="btn bg-[#8E00F4] text-white border-none w-full text-left"
-                    onClick={toggleMenu}
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="btn bg-[#360072] text-white border-none w-full text-left"
-                    onClick={toggleMenu}
-                  >
-                    Join now
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Logout Confirmation Modal */}
       {isModalOpen && (
@@ -283,7 +333,7 @@ const Navbar = () => {
           </div>
         </div>
       )}
-    </nav>
+    </>
   );
 };
 

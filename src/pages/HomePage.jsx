@@ -30,7 +30,7 @@ const HomePage = () => {
   const posts = data?.posts || [];
 
   return (
-    <div className="h-screen overflow-hidden grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div className="h-screen overflow-hidden grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
       {/* Left Sidebar - Fixed */}
       <div className="hidden lg:block lg:col-span-1 h-full">
         <div className="h-full overflow-y-auto">
@@ -59,14 +59,14 @@ const HomePage = () => {
           </div>
         )}
         {!isLoading && recommendedUsers?.length > 0 && (
-      <div className="block lg:hidden mt-6">
-        <h3 className="font-semibold mb-4 text-black">People you may know</h3>
-        <div className="space-y-4">
-          {recommendedUsers.map((user) => (
-            <RecommendedUser key={user._id} user={user} />
-          ))}
+        <div className="block lg:hidden mt-6">
+          <h3 className="font-semibold mb-4 text-black">People you may know</h3>
+          <div className="space-y-4">
+            {recommendedUsers.map((user) => (
+              <RecommendedUser key={user._id} user={user} />
+            ))}
+          </div>
         </div>
-      </div>
     )}
       </div>
 
