@@ -13,12 +13,13 @@ import NotificationsPage from './pages/NotificationsPage.jsx'
 import NetworkPage from './pages/NetworkPage.jsx';
 import PostPage from './pages/PostPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
+import Loader from './components/Loader.jsx'
 
 function App() {
   
   const { data: authUser, isLoading } = useAuthUser();
 
- if(isLoading) return null;
+ if(isLoading) return <div><Loader /></div>;
 
   return (
     <Layout>
